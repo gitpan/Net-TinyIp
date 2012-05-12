@@ -2,24 +2,22 @@ package Net::TinyIp;
 use strict;
 use warnings;
 use Net::TinyIp::Address;
-use Net::TinyIp::Address::v4;
-use Net::TinyIp::Address::v6;
 
 use overload q{""} => \&human_readable;
 
-our $VERSION = '0.01';
+our $VERSION = "0.07";
 
-### # Might import util method by this.
-### sub import {
-###     my $class = shift;
-###     my @tags  = @_;
-### 
-###     foreach my $tag ( @tags ) {
-###         my $module = join q{::}, $class, map { ucfirst } split m{_}, $tag;
-###         eval "require $module"
-###             or die;
-###     }
-### }
+sub import {
+    my $class = shift;
+    my @tags  = @_;
+
+    foreach my $tag ( @tags ) {
+        my $module = join q{::}, $class, "Util", join q{}, map { ucfirst } split m{_}, $tag;
+        eval "require $module"
+            or die;
+        $module->import;
+    }
+}
 
 sub new {
     my $class   = shift;
@@ -29,7 +27,11 @@ sub new {
     my( $host, $cidr ) = split m{/}, $address;
 
     my $version = $host =~ m{[.]} ? 4 : $host =~ m{[:]} ? 6 : undef;
-    my $module  = join q{::}, __PACKAGE__, "Address", "v$version";
+    my $module  = join q{::}, $class, "Address", "v$version";
+
+    unless ( defined $cidr ) {
+        $cidr = $module->get( "bits_length" );
+    }
 
     $self{host}    = $module->from_string( $host );
     $self{network} = $module->from_cidr( $cidr );
@@ -78,7 +80,7 @@ Net::TinyIp - IP object
 
 =head1 DESCRIPTION
 
-Net::TinyIp represents IP address.
+Net::TinyIp represents host IP address, and network IP address.
 
 =head1 AUTHOR
 

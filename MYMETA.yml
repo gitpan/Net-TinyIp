@@ -23,4 +23,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/kuniyoshi/Net-TinyIp.git
-version: 0.01
+version: 0.07
