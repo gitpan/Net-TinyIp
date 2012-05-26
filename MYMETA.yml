@@ -20,7 +20,8 @@ no_index:
     - xt
 requires:
   Module::Install::ReadmeFromPod: 0
+  Readonly: 0
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/kuniyoshi/Net-TinyIp.git
-version: 0.07
+version: 0.08
